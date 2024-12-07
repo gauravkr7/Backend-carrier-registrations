@@ -39,6 +39,22 @@ interface ICompany extends Document {
     createdBy: Schema.Types.ObjectId;
     superadminId: Schema.Types.ObjectId;
     updatedBy: Schema.Types.ObjectId;
+
+    Common: string;
+    Contract: string;
+    Broker: string;
+    DotStatus: string;
+    Allowtooperator: string;
+    BiptoInsurance: string;
+    CompanyDBA: string;
+    Vehicle: string;
+    Driver: string;
+    Hazmat: string;
+    phyStreet: string;
+    phyCity: string;
+    phyState: string;
+    phyZipcode: string;
+    phyCountry: string;
 }
 
 const CompanySchema: Schema = new Schema({
@@ -54,7 +70,7 @@ const CompanySchema: Schema = new Schema({
     nyUploadDocument: { type: String, required: true },
     nyExpiration: { type: Date, required: true },
     nmWdt: { type: String, required: true },
-    ein: { type: String, required: true },
+    ein: { type: String },
     w9: { type: String, required: true },
     w9UploadDocument: { type: String, required: true },
     iftaAcc: { type: String, required: true },
@@ -62,7 +78,7 @@ const CompanySchema: Schema = new Schema({
     irpAcc: { type: String, required: true },
     irpRenewalDate: { type: Date, required: true },
     insuranceDocument: { type: String, required: true },
-    address: { type: String, required: true },
+    address: { type: String },
     phone: { type: Number, required: true },
     pullNoticeAcc: { type: String, required: true },
     truck: { type: String, required: true },
@@ -80,6 +96,22 @@ const CompanySchema: Schema = new Schema({
     createdBy: { type: Schema.Types.ObjectId, required: true },
     updatedBy: { type: Schema.Types.ObjectId },
     superadminId: { type: Schema.Types.ObjectId },
+
+    Common: { type: String, required: true },
+    Contract: { type: String, required: true },
+    Broker: { type: String, required: true },
+    DotStatus: { type: String, required: true },
+    Allowtooperator: { type: String, required: true },
+    BiptoInsurance: { type: String, required: true },
+    CompanyDBA: { type: String, required: true },
+    Vehicle: { type: String, required: true },
+    Driver: { type: String, required: true },
+    Hazmat: { type: String, required: true },
+    phyStreet: { type: String, required: true },
+    phyCity: { type: String, required: true },
+    phyState: { type: String, required: true },
+    phyZipcode: { type: String, required: true },
+    phyCountry: { type: String, required: true },
 });
 
 const Company = mongoose.model<ICompany>('Company', CompanySchema);

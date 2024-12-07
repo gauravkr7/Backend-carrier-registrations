@@ -1,5 +1,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
+
+
 interface IAddress {
     FromDate: Date;
     ToDate: Date;
@@ -9,32 +11,32 @@ interface IAddress {
     Street: string;
 }
 
-// interface ILicense {
-//     State: string;
-//     Number: string;
-//     ExpirationDate: Date;
-// }
+interface ILicense {
+    State: string;
+    Number: string;
+    ExpirationDate: Date;
+}
 
-// interface IExperience {
-//     TypeOfVehicleDriven: string;
-//     From: Date;
-//     To: Date;
-//     ApproximateMileageDriven: number;
-// }
+interface IExperience {
+    TypeOfVehicleDriven: string;
+    From: Date;
+    To: Date;
+    ApproximateMileageDriven: number;
+}
 
-// interface IAccident {
-//     Date: Date;
-//     Describe: string;
-//     Fatalities: number;
-//     Injuries: number;
-// }
+interface IAccident {
+    Date: Date;
+    Describe: string;
+    Fatalities: number;
+    Injuries: number;
+}
 
-// interface ITrafficViolation {
-//     Date: Date;
-//     Violation: string;
-//     State: string;
-//     CommercialVehicle: boolean;
-// }
+interface ITrafficViolation {
+    Date: Date;
+    Violation: string;
+    State: string;
+    CommercialVehicle: boolean;
+}
 
 interface IEmploymentHistory {
     From: Date;
@@ -57,6 +59,7 @@ interface IControlledSubstanceAndAlcohol {
     MiddleName: string;
     LastName: string;
     DateOfBirth: Date;
+    DrivingLicence: string;
     City: string;
     State: string;
     Zip: string;
@@ -106,6 +109,7 @@ interface IDriver extends Document {
     FirstName: string;
     MiddleName: string;
     LastName: string;
+    DrivingLicence: string;
     DateOfBirth: Date;
     City: string;
     State: string;
@@ -188,6 +192,9 @@ interface IDriver extends Document {
     token: string;
     status: boolean;
     approvedBy: string
+    createdBy: Schema.Types.ObjectId;
+    adminId: Schema.Types.ObjectId;  
+    updatedBy: Schema.Types.ObjectId;
 }
 
 const AddressSchema: Schema = new Schema({
@@ -199,32 +206,32 @@ const AddressSchema: Schema = new Schema({
     Street: { type: String, required: false }
 });
 
-// const LicenseSchema: Schema = new Schema({
-//     State: { type: String, required: false },
-//     Number: { type: String, required: false },
-//     ExpirationDate: { type: Date, required: false }
-// });
+const LicenseSchema: Schema = new Schema({
+    State: { type: String, required: false },
+    Number: { type: String, required: false },
+    ExpirationDate: { type: Date, required: false }
+});
 
-// const ExperienceSchema: Schema = new Schema({
-//     TypeOfVehicleDriven: { type: String, required: false },
-//     From: { type: Date, required: false },
-//     To: { type: Date, required: false },
-//     ApproximateMileageDriven: { type: Number, required: false }
-// });
+const ExperienceSchema: Schema = new Schema({
+    TypeOfVehicleDriven: { type: String, required: false },
+    From: { type: Date, required: false },
+    To: { type: Date, required: false },
+    ApproximateMileageDriven: { type: Number, required: false }
+});
 
-// const AccidentSchema: Schema = new Schema({
-//     Date: { type: Date, required: false },
-//     Describe: { type: String, required: false },
-//     Fatalities: { type: Number, required: false },
-//     Injuries: { type: Number, required: false }
-// });
+const AccidentSchema: Schema = new Schema({
+    Date: { type: Date, required: false },
+    Describe: { type: String, required: false },
+    Fatalities: { type: Number, required: false },
+    Injuries: { type: Number, required: false }
+});
 
-// const TrafficViolationSchema: Schema = new Schema({
-//     Date: { type: Date, required: false },
-//     Violation: { type: String, required: false },
-//     State: { type: String, required: false },
-//     CommercialVehicle: { type: Boolean, required: false }
-// });
+const TrafficViolationSchema: Schema = new Schema({
+    Date: { type: Date, required: false },
+    Violation: { type: String, required: false },
+    State: { type: String, required: false },
+    CommercialVehicle: { type: Boolean, required: false }
+});
 
 const EmploymentHistorySchema: Schema = new Schema({
     From: { type: Date, required: false },
@@ -296,6 +303,7 @@ const DriverSchema: Schema = new Schema({
     FirstName: { type: String, required: false },
     MiddleName: { type: String, required: false },
     LastName: { type: String, required: false },
+    DrivingLicence :{type: String, required: false},
     DateOfBirth: { type: Date, required: false },
     City: { type: String, required: false },
     State: { type: String, required: false },
@@ -304,10 +312,10 @@ const DriverSchema: Schema = new Schema({
     SocialSecurityNumber: { type: String, required: false },
     Address: { type: String, required: false },
     PreviousAddresses: { type: [AddressSchema], required: false },
-    // Licenses: { type: [LicenseSchema], required: false },
-    // Experience: { type: [ExperienceSchema], required: false },
-    // Accidents: { type: [AccidentSchema], required: false },
-    // TrafficViolations: { type: [TrafficViolationSchema], required: false },
+    License: { type: [LicenseSchema], required: false },
+    Experience: { type: [ExperienceSchema], required: false },
+    Accidents: { type: [AccidentSchema], required: false },
+    TrafficViolations: { type: [TrafficViolationSchema], required: false },
     DeniedSuspendedRevoked: {
         StateOfIssuance: { type: String, required: false },
         Explanation: { type: String, required: false }
@@ -377,7 +385,10 @@ const DriverSchema: Schema = new Schema({
     email: { type: String, unique: true, required: false },
     token: { type: String, unique: true, required: false },
     status: { type: Boolean, default: false },
-    approvedBy: { type: String }
+    approvedBy: { type: String },
+    createdBy: { type: Schema.Types.ObjectId},
+    adminId: { type: Schema.Types.ObjectId },
+    updatedBy: { type: Schema.Types.ObjectId },
 });
 
 const Driver = mongoose.model<IDriver>('DriverApplication', DriverSchema);

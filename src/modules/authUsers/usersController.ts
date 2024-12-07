@@ -161,6 +161,7 @@ const getAllUsers = async (req: Request, res: Response) => {
         $or: [
           { role: 'admin', superadminId: requester._id },
           { role: 'superadminuser', superadminId: requester._id },
+          { role: 'adminuser', superadminId: requester._id },
         ],
       });
     } else if (requester.role === 'admin') {
@@ -213,8 +214,49 @@ const deleteUser = async (req: Request, res: Response) => {
   }
 }
 
+const updateUser = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { name, email, role, companyId, permissions } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ message: 'User ID is required.' });
+  }
+
+  try {
+    const requester = (req as any).user as IUser;
+
+    // Check if the requester is a superadmin or admin
+    if (!['superadmin', 'admin'].includes(requester.role)) {
+      return res.status(403).json({ message: 'Access denied. Only superadmins or admins can update users.' });
+    }
+
+    const userToUpdate = await UserModel.findById(id);
+    if (!userToUpdate) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    // Admin can only change roles of adminuser
+    if (requester.role === 'admin' && userToUpdate.role !== 'adminuser') {
+      return res.status(403).json({ message: 'Admins can only update adminuser roles.' });
+    }
+
+    if (name) userToUpdate.name = name;
+    if (email) userToUpdate.email = email;
+    if (role) userToUpdate.role = role;
+    if (companyId) userToUpdate.companyId = companyId;
+    if (permissions) userToUpdate.permissions = permissions;
+
+    await userToUpdate.save();
+
+    res.status(200).json({ message: 'User updated successfully.', userToUpdate });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
 
 
-export { loginAllUsers, registerAllUser, changePassword, getAllUsers, deleteUser };
+
+export { loginAllUsers, registerAllUser, changePassword, getAllUsers, deleteUser ,updateUser};
 
 

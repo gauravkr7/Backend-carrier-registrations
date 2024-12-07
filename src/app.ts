@@ -10,7 +10,6 @@ import trailerRouter from "./modules/trailerList/trailer-routes";
 import driverRouter from "./modules/driverList/driver-routes";
 import driverapplicationRouter from './modules/driverApplication/driverApplication-routes'
 import companyRouter from './modules/companyProfile/companyprofile-routes'
-import companyCarrierRouter from './modules/companyCreate/company-routes'
 import accidentRouter from './modules/driverApplicationpart/Accidentpart/accident-routes'
 import experinceRouter from './modules/driverApplicationpart/Experiencepart/experience-routes'
 import licenseRouter from './modules/driverApplicationpart/Licensepart/license-routes'
@@ -18,6 +17,8 @@ import voilationRouter from './modules/driverApplicationpart/TrafficViolationpar
 import customerData from './modules/fileManger/Customer Data/customerdata-routes'
 import files from './modules/fileManger/Files/file-routes'
 import router from './permission/permission-update';
+import dotDataRoutes from './modules/dotnumber/dot.routes';
+import './middleware/corn-job';
 dotenv.config();
 db();
 const app = express();
@@ -49,17 +50,20 @@ app.use('/api/driverList', driverRouter)
 app.use('/api/driverapplication', driverapplicationRouter)
 //For Company Profile
 app.use('/api/company', companyRouter)
-app.use('/api/companycarrier', companyCarrierRouter)
+
 //For DriverApplications Part 
 app.use('/api/accident', accidentRouter)
 app.use('/api/experince', experinceRouter)
 app.use('/api/license', licenseRouter)
 app.use('/api/voilation', voilationRouter)
 // File Manager Module
-app.use('/api/customerdata', customerData)
+app.use('/api/filemanager', customerData)
 app.use('/api/file', files)
 //update permissions
 app.use(router)
+
+// DOTNUMBER Data api 
+app.use('/api', dotDataRoutes)
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

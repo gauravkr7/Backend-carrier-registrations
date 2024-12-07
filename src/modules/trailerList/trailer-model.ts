@@ -35,6 +35,7 @@ export interface Trailer extends Document {
   adminId: Schema.Types.ObjectId;   // Reference to the admin who created the user
   superadminId: Schema.Types.ObjectId; // Reference to the superadmin who added the admin
   updatedBy: Schema.Types.ObjectId; 
+  companyId: Schema.Types.ObjectId;
 }
 
 const TrailerSchema: Schema<Trailer> = new Schema({
@@ -63,7 +64,9 @@ const TrailerSchema: Schema<Trailer> = new Schema({
   createdBy: { type: Schema.Types.ObjectId, required: true },
   adminId: { type: Schema.Types.ObjectId },
   superadminId: { type: Schema.Types.ObjectId },
-  updatedBy: { type: Schema.Types.ObjectId }
+  updatedBy: { type: Schema.Types.ObjectId },
+  companyId: { type: Schema.Types.ObjectId, required: true }
+
 });
 
 const Trailer = mongoose.model<Trailer>('Trailer', TrailerSchema);

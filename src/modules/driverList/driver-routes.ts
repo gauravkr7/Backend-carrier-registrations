@@ -17,4 +17,7 @@ router.put('/driver/update/:id', authenticateUsers, checkPermissions('truckList'
 
 router.delete('/driver/delete/:id', authenticateUsers, checkPermissions('truckList', 'delete'), driverController.deleteDriver);
 
+// router.get('/expiring-documents', driverController.getExpiringDocuments);
+
+
 export default router;

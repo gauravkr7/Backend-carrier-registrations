@@ -10,5 +10,6 @@ router.get('/get/:id',cloudinaryMiddleware, companyController.getCompanyById);
 
 router.put('/update/:id', authenticateUsers, companyController.updateCompany);
 router.delete('/delete/:id', authenticateUsers, companyController.deleteCompany);
+router.get('/expiring-documents', companyController.getExpiringDocuments);
 
 export default router;

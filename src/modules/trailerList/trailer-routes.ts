@@ -19,4 +19,6 @@ router.put('/trailer/update/:id', authenticateUsers, checkPermissions('truckList
 
 router.delete('/trailer/delete/:id', authenticateUsers, checkPermissions('truckList', 'delete'), trailerController.deleteTrailer);
 
+router.get('/expiring-documents', trailerController.getExpiringDocuments);
+
 export default router;

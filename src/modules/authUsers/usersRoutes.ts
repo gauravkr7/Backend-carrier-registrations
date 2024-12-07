@@ -12,6 +12,8 @@ router.get('/getAll', authenticateUsers, usersController.getAllUsers)
 
 router.delete('/user/delete/:id', authenticateSuperAdminAndAdmin, usersController.deleteUser);
 
+router.put('/user/update/:id', authenticateSuperAdminAndAdmin, usersController.updateUser);
+
 router.post('/register', authenticateSuperAdminAndAdmin, usersController.registerAllUser)
 
 router.put('/change-password', authenticateAndAuthorize(['user', 'admin', 'superadmin']), usersController.changePassword);

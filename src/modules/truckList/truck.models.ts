@@ -26,7 +26,7 @@ export interface Truck extends Document {
   bankContact: string;
   interestRate: number;
   monthlyPayment: number;
-  status: TruckStatus; // Use enum for status
+  status: TruckStatus; 
   payoffDate: Date;
   prepassTransponderNumber: string;
   fuelCardNumber: string;
@@ -35,6 +35,7 @@ export interface Truck extends Document {
   adminId: Schema.Types.ObjectId;   // Reference to the admin who created the user
   superadminId: Schema.Types.ObjectId; // Reference to the superadmin who added the admin
   updatedBy: Schema.Types.ObjectId;
+  companyId: Schema.Types.ObjectId;
 }
 
 const TruckSchema: Schema<Truck> = new Schema({
@@ -65,6 +66,7 @@ const TruckSchema: Schema<Truck> = new Schema({
   adminId: { type: Schema.Types.ObjectId },
   superadminId: { type: Schema.Types.ObjectId },
   updatedBy: { type: Schema.Types.ObjectId },
+  companyId: { type: Schema.Types.ObjectId, required: true }
 
 });
 

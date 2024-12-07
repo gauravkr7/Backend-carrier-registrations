@@ -13,11 +13,14 @@ export const createTrailer = async (req: Request, res: Response) => {
 
             const user = (req as any).user;
             const adminId = user.adminId;
+            const companyId = user.companyId;
+
 
             const trailerData = {
                 ...req.body,
                 createdBy: user._id,
                 adminId,
+                companyId: companyId,
             };
 
             // Handle file uploads from req.cloudinaryUrls
@@ -129,5 +132,31 @@ export const getTrailerbyId = async (req, res) => {
         res.json(trailer);
     } catch (error) {
         res.status(500).json({ message: error.message });
+    }
+};
+
+
+export const getExpiringDocuments = async (req: Request, res: Response) => {
+    try {
+        const today = new Date();
+        const days30 = new Date(today);
+        const days7 = new Date(today);
+        const day1 = new Date(today);
+
+        days30.setDate(today.getDate() + 30);
+        days7.setDate(today.getDate() + 7);
+        day1.setDate(today.getDate() + 1);
+
+        const companies = await Trailer.find({
+            $or: [
+                { expirationDate: { $in: [days30, days7, day1] } },
+               
+            ],
+        });
+
+        res.status(200).json(companies);
+    } catch (error) {
+        console.error('Error fetching expiring documents:', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 };

@@ -63,6 +63,8 @@ interface IDriver extends Document {
     adminId: Schema.Types.ObjectId;   // Reference to the admin who created the user
     superadminId: Schema.Types.ObjectId; // Reference to the superadmin who added the admin
     updatedBy: Schema.Types.ObjectId; 
+    companyId: Schema.Types.ObjectId;
+
 }
 
 const DriverSchema: Schema = new Schema({
@@ -122,6 +124,7 @@ const DriverSchema: Schema = new Schema({
     adminId: { type: Schema.Types.ObjectId },
     superadminId: { type: Schema.Types.ObjectId },
     updatedBy: { type: Schema.Types.ObjectId },
+    companyId: { type: Schema.Types.ObjectId, required: true }
 });
 
 const Driver = model<IDriver>('Driver', DriverSchema);

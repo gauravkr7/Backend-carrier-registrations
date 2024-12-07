@@ -1,18 +1,19 @@
 import { Router } from 'express';
 const router = Router();
 
-import * as CustomerData from '../Customer Data/customerdata-controller';
-import { authenticateSuperAdminAndAdmin } from '../../../middleware/authMiddleware';
-//truck routes
-router.post('/create', CustomerData.createCompany);
-router.get('/getAll', CustomerData.getAllCompanies);
+import * as FileManagerData from '../Customer Data/customerdata-controller';
+import { authenticateSuperAdminAndAdmin, authenticateUsers } from '../../../middleware/authMiddleware';
+import { authorizeAccess } from '../../../middleware/get.authentication';
+import { cloudinaryMiddleware } from '../../../middleware/cloudinaryMiddleware';
 
-//ACCORDING ADMIN GET AND CREATE 
+router.post('/create', authenticateUsers, authorizeAccess, FileManagerData.createCompany);
 
-// router.post('/driver/create',authenticateSuperAdminAndAdmin, driverController.createDriver);
-// router.get('/driver/getAll',authenticateSuperAdminAndAdmin, driverController.getAllDrivers);
+router.get('/getAll', cloudinaryMiddleware, authenticateUsers, authorizeAccess, FileManagerData.getAllCompanies);
 
-router.put('/update/:id', authenticateSuperAdminAndAdmin, CustomerData.updateCompany);
-router.delete('/delete/:id', authenticateSuperAdminAndAdmin, CustomerData.deleteCompany);
+router.get('/getById/:id', cloudinaryMiddleware, authenticateUsers, authorizeAccess, FileManagerData.getCompanyById);
+
+router.put('/update/:id', authenticateUsers, FileManagerData.updateCompany);
+
+router.delete('/delete/:id', authenticateUsers, FileManagerData.deleteCompany);
 
 export default router;

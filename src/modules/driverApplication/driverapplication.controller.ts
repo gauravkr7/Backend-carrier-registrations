@@ -1,42 +1,44 @@
 import { Request, Response } from 'express';
 import { Driver } from '../driverApplication/driverApplication-model';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { sendEmail } from '../../middleware/nodeMailermiddleware'
 import * as dotenv from "dotenv";
+import { sendEmail } from '../../middleware/nodeMailermiddleware'
+
+
 dotenv.config();
-const jwtSecret = process.env.AUTH_SECRET_KEY || 'kHv5s2TfP3C6pYsB9vQeThWmZq4t7wzC'
-// Create a new driver
+const jwtSecret = process.env.AUTH_SECRET_KEY || 'kHv5s2TfP3C6pYsB9vQeThWmZq4t7wzC'; // Ensure AUTH_SECRET_KEY is defined in your environment
 const createDriver = async (req: Request, res: Response) => {
     try {
-        const { email } = req.body;
+        const { FirstName, MiddleName, LastName, CellularTelephone, email, DrivingLicence } = req.body;
         if (!jwtSecret) {
             return res.status(500).json({ error: 'JWT secret is not defined' });
         }
-        const token = jwt.sign({ email }, jwtSecret, { expiresIn: '7d' });
+
+        const token = jwt.sign({ email }, jwtSecret, { expiresIn: '1h' });
 
         if (!token) {
             return res.status(500).json({ error: 'Failed to generate token' });
         }
-        const existingDriver = await Driver.findOne({ email });
-        if (existingDriver) {
-            return res.status(400).json({ error: 'Email already exists' });
-        }
+
         const newDriver = new Driver({
+            FirstName,
+            MiddleName,
+            LastName,
+            CellularTelephone,
             email,
+            DrivingLicence,
             token,
             status: false
         });
 
-        // await newDriver.save();
         try {
             await newDriver.validate();
             await newDriver.save();
-            // res.status(201).json(newDriver);
         } catch (validationError) {
-            res.status(400).json({ message: validationError.message });
+            return res.status(400).json({ message: validationError.message });
         }
 
-        const link = `http://localhost:5173?token=${token}`;
+        const link = `http://localhost:4200/driver-applicationForm?token=${token}`;
         await sendEmail(email, 'Complete your driver application', `Please complete your driver application by clicking the link: ${link}`);
 
         res.status(200).send('Driver application created and email sent');

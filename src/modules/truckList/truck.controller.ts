@@ -13,11 +13,13 @@ export const createTruck = async (req: Request, res: Response) => {
 
       const user = (req as any).user;
       const adminId = user.adminId;
+      const companyId = user.companyId;
 
       const truckData = {
         ...req.body,
         createdBy: user._id,
-        adminId
+        adminId,
+        companyId: companyId,
       };
 
       // Handle file uploads from req.cloudinaryUrls

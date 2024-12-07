@@ -2,16 +2,16 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 interface ITrafficViolation extends Document {
     Date: Date;
-    Violation: string;
-    State: string;
-    CommercialVehicle: boolean;
+    ViolationType: string;
+    Description: string;
+    FineAmount: boolean;
 }
 
 const TrafficViolationSchema: Schema = new Schema({
     Date: { type: Date, required: true },
-    Violation: { type: String, required: true },
-    State: { type: String, required: true },
-    CommercialVehicle: { type: Boolean, required: true }
+    ViolationType: { type: String, required: true },
+    Description: { type: String, required: true },
+    FineAmount: { type: Boolean, required: true }
 });
 
 const TrafficViolation = mongoose.model<ITrafficViolation>('TrafficViolation', TrafficViolationSchema);

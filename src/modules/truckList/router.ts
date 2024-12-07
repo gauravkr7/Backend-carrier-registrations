@@ -18,4 +18,5 @@ router.put('/truck/update/:id', authenticateUsers, checkPermissions('truckList',
 
 router.delete('/truck/delete/:id', authenticateUsers, checkPermissions('truckList', 'delete'), truckController.deleteTruck);
 
+
 export default router;

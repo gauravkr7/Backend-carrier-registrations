@@ -111,29 +111,32 @@ export const deleteCompany = async (req: Request, res: Response) => {
 
 export const getAllCompanies = async (req: Request, res: Response) => {
     try {
-        const requester = (req as any).user;
-
-        let companies;
-
-        if (requester.role === 'superadmin') {
-            // Superadmin can see all companies
-            companies = await Company.find();
-        } else if (requester.role === 'admin') {
-            // Admin can see only their associated company
-            companies = await Company.find({ _id: requester.companyId });
-        } else if (requester.role === 'superadminuser') {
-            // Superadmin user can see companies associated with their superadmin
-            companies = await Company.find({ superadminId: requester.superadminId });
-        } else {
-            // Handle unauthorized access for other user types
-            return res.status(403).json({ message: 'Access denied. Unauthorized user type.' });
-        }
-
-        res.status(200).json(companies);
+      const requester = (req as any).user;
+  
+      let companies;
+  
+      if (requester.role === 'superadmin') {
+        // Superadmin can see all companies
+        companies = await Company.find();
+      } else if (requester.role === 'admin') {
+        // Admin can only see their associated company
+        companies = await Company.find({ _id: requester.companyId });
+      } else if (requester.role === 'adminuser') {
+        // Adminuser can see only the company they are assigned to via their admin
+        companies = await Company.find({ _id: requester.companyId }); // assuming companyId is stored in the adminuser's profile
+      } else if (requester.role === 'superadminuser') {
+        // Superadmin user can see companies associated with their superadmin
+        companies = await Company.find({ superadminId: requester.superadminId });
+      } else {
+        // Handle unauthorized access for other user types
+        return res.status(403).json({ message: 'Access denied. Unauthorized user type.' });
+      }
+  
+      res.status(200).json(companies);
     } catch (error) {
-        res.status(400).json({ message: error.message });
+      res.status(400).json({ message: error.message });
     }
-};
+  };
 
 
 export const getCompanyById = async (req: Request, res: Response) => {
@@ -153,6 +156,34 @@ export const getCompanyById = async (req: Request, res: Response) => {
         res.status(200).json(company);
     } catch (error) {
         console.error('Error in getCompanyById:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+
+export const getExpiringDocuments = async (req: Request, res: Response) => {
+    try {
+        const today = new Date();
+        const days30 = new Date(today);
+        const days7 = new Date(today);
+        const day1 = new Date(today);
+
+        days30.setDate(today.getDate() + 30);
+        days7.setDate(today.getDate() + 7);
+        day1.setDate(today.getDate() + 1);
+
+        const companies = await Company.find({
+            $or: [
+                { kyuExpiration: { $in: [days30, days7, day1] } },
+                { nyExpiration: { $in: [days30, days7, day1] } },
+                { irpRenewalDate: { $in: [days30, days7, day1] } },
+                { trailerRegistration: { $in: [days30, days7, day1] } },
+            ],
+        });
+
+        res.status(200).json(companies);
+    } catch (error) {
+        console.error('Error fetching expiring documents:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };

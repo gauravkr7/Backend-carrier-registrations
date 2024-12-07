@@ -1,28 +1,21 @@
 import nodemailer from 'nodemailer';
 
-const sendEmail = async (to: string, subject: string, text: string) => {
+export const sendEmail = async (to: string, subject: string, text: string) => {
     try {
         const transporter = nodemailer.createTransport({
-            service: 'hotmail',
-            secure: false,
+            host: process.env.SMTP_HOST,
+            port: parseInt(process.env.SMTP_PORT || '587'),
+            secure: process.env.SMTP_SECURE === 'true',
             auth: {
-                user: 'dudpra02@gmail.com',
-                pass: '#992865#'
-            }
+                user: process.env.SMTP_USER,
+                pass: process.env.SMTP_PASS,
+            },
         });
 
-        const mailOptions = {
-            from: 'dudpra02@gmail.com',
-            to,
-            subject,
-            text,
-        };
-
-        const info = await transporter.sendMail(mailOptions);
+        const mailOptions = { from: process.env.SMTP_USER, to, subject, text };
+        await transporter.sendMail(mailOptions);
+        console.log(`Email sent to ${to}`);
     } catch (error) {
-        console.error('Error sending email:', error);
-        throw error;
+        console.error(`Failed to send email to ${to}:`, error);
     }
 };
-
-export { sendEmail };

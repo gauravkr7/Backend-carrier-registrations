@@ -1,4 +1,5 @@
 import { cloudinaryMiddleware } from '../../middleware/cloudinaryMiddleware';
+import { Request , Response } from 'express';
 import Driver from '../driverList/driver-model';
 
 // Create a driver
@@ -13,10 +14,12 @@ export const createDriver = async (req, res) => {
 
             const user = (req as any).user;
             const adminId = user.adminId;
+            const companyId = user.companyId;
 
             const driverData = {
                 ...req.body, createdBy: user._id,
                 adminId,
+                companyId: companyId,
             };
 
             if (req.cloudinaryUrls) {
@@ -120,5 +123,31 @@ export const getDriverbyId = async (req, res) => {
         res.json(driver);
     } catch (error) {
         res.status(500).json({ message: error.message });
+    }
+};
+
+export const getExpiringDocuments = async (req: Request, res: Response) => {
+    try {
+        const today = new Date();
+        const days30 = new Date(today);
+        const days7 = new Date(today);
+        const day1 = new Date(today);
+
+        days30.setDate(today.getDate() + 30);
+        days7.setDate(today.getDate() + 7);
+        day1.setDate(today.getDate() + 1);
+
+        const companies = await Driver.find({
+            $or: [
+                { licenseExpirationDate: { $in: [days30, days7, day1] } },
+                { medicalExpirationDate: { $in: [days30, days7, day1] } },
+                { workAuthorizationExpirationDate: { $in: [days30, days7, day1] } }, 
+            ],
+        });
+
+        res.status(200).json(companies);
+    } catch (error) {
+        console.error('Error fetching expiring documents:', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 };
